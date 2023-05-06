@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+	<title>Encriptador</title>
+</head>
+<body>
+<header>
+	<img class="logo" src="Multimedia/logo.png">
+</header>
+
+<div class="container text-center">
+	<div class="row">
+    	<div class="col-8">
+    		<div class="container">
+    			<input type="text" id="txtEncriptar" placeholder="Ingrese el texto aqui"><br>
+				<label>Solo letras minúsculas y sin acentos</label><br>
+				<input onclick="encriptar()" type="submit" value="Encriptar">
+				<input onclick="desencriptar()" type="submit" value="Desencriptar">
+			</div>
+    	</div>
+    	<div class="col-4">
+    		<div class="container" id="principal" style="display: block;">
+    			<img src="Multimedia/Muñeco.png">
+				<label class="msj">Ningún mensaje fue encontrado</label>
+				<label class="texto">Ingresa el texto que desees encriptar o desencriptar.</label>
+    		</div>
+	    	<div id="proceso" style="display: none;">
+	    		<input type="text" id="txtEncriptado" value="" readonly>
+				<input type="submit" onclick="btnCopiar()" value="Copiar">
+	    	</div>
+  		</div>	
+	</div>
+</div>
+
+	<footer>
+		<h5>Daniel Iván López</h5>
+	</footer>
+</body>
+</html>
+
+<script>
+
+function encriptar(){//oculta el div con img y msj(PRINCIPAL) y encripta texto, muestra proceso
+    p=document.getElementById("principal");
+  	p.style.display='none';
+ 	m=document.getElementById("proceso");
+  	m.style.display='block';
+
+  	let texto = document.getElementById("txtEncriptar").value.toLowerCase(); // Obtiene el texto ingresado y lo convierte a minúsculas
+    let vocales = {a: 0, e: 0, i: 0, o: 0, u: 0}; // Objeto para almacenar las vocales encontradas
+    
+    // Clasifica las vocales del texto
+    for(let i = 0; i < texto.length; i++) {
+        let letra = texto.charAt(i);
+        if(vocales.hasOwnProperty(letra)) {
+            vocales[letra]++;
+        }
+    }
+    
+    // Codifica el mensaje
+    let mensajeCodificado = "";
+    for(let i = 0; i < texto.length; i++) {
+        let letra = texto.charAt(i);
+        switch(letra) {
+            case "a":
+                mensajeCodificado += "ai";
+                break;
+            case "e":
+                mensajeCodificado += "enter";
+                break;
+            case "i":
+                mensajeCodificado += "imes";
+                break;
+            case "o":
+                mensajeCodificado += "ober";
+                break;
+            case "u":
+                mensajeCodificado += "ufat";
+                break;
+            default:
+                mensajeCodificado += letra;
+        }
+    }
+    
+    // Muestra el mensaje codificado en el campo de texto correspondiente
+    let mensaje = document.getElementById("txtEncriptado");
+    mensaje.value = mensajeCodificado;
+
+    //borra el mensaje ingresado al campo de texto
+    document.getElementById("txtEncriptar").value="";
+}
+
+function desencriptar(){//oculta el div con img y msj(PRINCIPAL) y desencripta texto, muestra proceso
+    p=document.getElementById("principal");
+  	p.style.display='none';
+ 	m=document.getElementById("proceso");
+  	m.style.display='block';
+  	
+  	let mensajeCodificado = document.getElementById("txtEncriptar").value; // Obtiene el mensaje codificado
+    let mensajeDecodificado = "";
+    // Recorre el mensaje codificado letra por letra
+    for(let i = 0; i < mensajeCodificado.length; i++) {
+        let letra = mensajeCodificado.charAt(i);
+        
+        // Reemplaza las secuencias de caracteres por las vocales correspondientes
+        switch(letra) {
+            case "a":
+                mensajeDecodificado += "a";
+                break;
+            case "i":
+                if(mensajeCodificado.charAt(i + 1) == "m" && mensajeCodificado.charAt(i + 2) == "e" && mensajeCodificado.charAt(i + 3) == "s") {
+                    mensajeDecodificado += "i";
+                    i += 3;
+                }
+                break;
+            case "e":
+                if(mensajeCodificado.charAt(i + 1) == "n" && mensajeCodificado.charAt(i + 2) == "t" && mensajeCodificado.charAt(i + 3) == "e" && mensajeCodificado.charAt(i + 4) == "r") {
+                    mensajeDecodificado += "e";
+                    i += 4;
+                }
+                break;
+            case "o":
+                if(mensajeCodificado.charAt(i + 1) == "b" && mensajeCodificado.charAt(i + 2) == "e" && mensajeCodificado.charAt(i + 3) == "r") {
+                    mensajeDecodificado += "o";
+                    i += 3;
+                }
+                break;
+            case "u":
+                if(mensajeCodificado.charAt(i + 1) == "f" && mensajeCodificado.charAt(i + 2) == "a" && mensajeCodificado.charAt(i + 3) == "t") {
+                    mensajeDecodificado += "u";
+                    i += 3;
+                }
+                break;
+            default:
+                mensajeDecodificado += letra;
+        }
+    }
+    
+    // Muestra el mensaje decodificado en el campo de texto correspondiente
+    document.getElementById("txtEncriptado").value= mensajeDecodificado;
+}
+
+function btnCopiar(){
+	// Obtener el campo de texto
+  let campoTexto = document.getElementById("txtEncriptado");
+
+  // Seleccionar el texto dentro del campo de texto
+  campoTexto.select();
+
+  // Copiar el texto seleccionado al portapapeles
+  document.execCommand("copy");
+
+  // Alertar al usuario que se ha copiado el texto
+  alert("¡Texto copiado al portapapeles!");
+
+  //borra el mensaje ingresado al campo de texto
+  document.getElementById("txtEncriptar").value="";
+}
+
+</script>
+
+
